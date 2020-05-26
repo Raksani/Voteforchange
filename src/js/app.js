@@ -83,10 +83,11 @@ App = {
         electionInstance.campaigns(i).then(function(campaign) {
           var id = campaign[0];
           var name = campaign[1];
-          var voteCount = campaign[2];
-
+          var voteCountYes = campaign[2];
+          var voteCountNo = campaign[3];
+ 
           // Render campaign Result
-          var campaignTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>" + voteCount + "</td></tr>"
+          var campaignTemplate = "<tr><th>" + id + "</th><td>" + name + "</td><td>" + voteCountYes + "</td><td>" + voteCountNo + "</td></tr>"
           campaignsResults.append(campaignTemplate);
 
           // Render campaign ballot option
@@ -111,6 +112,18 @@ App = {
     var campaignId = $('#campaignsSelect').val();
     App.contracts.Election.deployed().then(function(instance) {
       return instance.vote(campaignId, { from: App.account });
+    }).then(function(result) {
+      // Wait for votes to update
+      $("#content").hide();
+      $("#loader").show();
+    }).catch(function(err) {
+      console.error(err);
+    });
+  },
+  castVote2: function() {
+    var campaignId = $('#campaignsSelect').val();
+    App.contracts.Election.deployed().then(function(instance) {
+      return instance.vote2(campaignId, { from: App.account });
     }).then(function(result) {
       // Wait for votes to update
       $("#content").hide();
